@@ -79,7 +79,7 @@ export const createStore = (
 export default createStore;
 ```
 
-上記のコードはほとんどZustandと同じように使えます。
+これでZustandを模擬的に再現できました。この簡易的な状態管理を行うコードはほとんどZustandと同じように使えます。
 
 ```
 import { create } from "./lib/index";
@@ -127,6 +127,6 @@ export default Increment;
 どのように際レンダリングを最適化させているかをざっくりと説明します。
 1. useStoreを呼び出した各々のコンポーネントでuseEffectの処理が走る際、listener関数を、createStore関数のsetオブジェクトに登録します。
 2. set関数が走ったタイミング(上記の場合でいうincrement関数が走ったタイミング)でsetオブジェクトに登録した関数を一つずつ実行させます。
-3. その関数は、厳密等価演算子(「===」)を用いて、以前のデータと異なる場合はforceUpdate関数で強制的に再レンダリングを引き起こし、逆に以前のデータと同じ場合は、スキップします
+3. その関数は、厳密等価演算子(「===」)を用いて、以前のデータと異なる場合はforceUpdate関数で強制的に再レンダリングを引き起こし、逆に以前のデータと同じ場合は、スキップします(ちなみに、私が確認した限り、Zustandはデフォルト状態の場合、厳密等価演算子ではなく[「Object.is」](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/is)関数を使っています。)
 
 このような流れで際レンダリングを最適化させています。もっと詳細に知りたい場合は、このレポジトリのlibフォルダ配下のcreateStore.tsxファイルやindex.tsxファイルの適当な部分にdebuggerを追加して、挙動を一つずつ確認してみてください。
